@@ -4,21 +4,27 @@ defmodule TodayWeb.PageLive do
 
   @impl true
   def mount(_params, _session, socket) do
-    {:ok, assign(socket, get_assigns())}
+    if connected?(socket), do: Today.subscribe()
+    {:ok, assign(socket, get_assigns()), temporary_assigns: [todos: []]}
   end
 
   @impl true
   def handle_event("toggle-complete", params = %{"id" => todo_id}, socket) do
     value = Map.get(params, "value", "off")
-    todos = Enum.map(socket.assigns.todos, &map_todo(&1, String.to_integer(todo_id), value == "on"))
-    {:noreply, assign(socket, todos: todos)}
+    Today.toggle_todo(todo_id, value == "on")
+    {:noreply, socket}
   end
 
   @impl true
   def handle_event("save", _, socket) do
-    todos = socket.assigns.todos
-    todo = create_todo(socket.assigns.new_todo, Enum.count(todos) + 1)
-    {:noreply, assign(socket, todos: todos ++ [todo])}
+    Today.create_todo(%{title: socket.assigns.new_todo})
+    {:noreply, update(socket, :new_todo, fn _ -> "" end)}
+  end
+
+  @impl true
+  def handle_event("delete", %{"id" => id}, socket) do
+    Today.delete_todo(id)
+    {:noreply, socket}
   end
 
   @impl true
@@ -26,25 +32,26 @@ defmodule TodayWeb.PageLive do
     {:noreply, assign(socket, new_todo: title)}
   end
 
-  defp map_todo(todo = %{id: id}, id, completed)do
-    Map.put(todo, :completed, completed)
-  end
-  defp map_todo(todo, _id, _) do
-    todo
+  @impl true
+  def handle_info({:todo_created, todo}, socket) do
+    {:noreply, update(socket, :todos, fn todos -> [todo | todos] end)}
   end
 
-  defp create_todo(title, id) do
-    %{
-      title: title,
-      completed: false,
-      id: id
-    }
+  @impl true
+  def handle_info({:todo_toggled, todo}, socket) do
+    {:noreply, update(socket, :todos, fn todos -> [todo | todos] end)}
   end
-  
+
+  @impl true
+  def handle_info({:todo_deleted, todo}, socket) do
+    IO.inspect todo, label: "deleted todo"
+    {:noreply, update(socket, :todos, fn todos -> [todo | todos] end)}
+  end
+
   defp get_assigns() do
     [
       date: get_todays_date(),
-      todos: get_todos()
+      todos: Today.get_todos()
     ]
   end
   
@@ -52,25 +59,5 @@ defmodule TodayWeb.PageLive do
     "Australia/Sydney"
     |> Timex.now()
     |> Timex.format!("{WDshort} {D} {Mfull} {YYYY}")
-  end
-
-  defp get_todos do
-    [
-      %{
-        title: "UI tweaks",
-        completed: true,
-        id: 1,
-      },
-      %{
-        title: "add analytics events",
-        completed: false,
-        id: 2,
-      },
-      %{
-        title: "write tickets for mobile apps",
-        completed: false,
-        id: 3,
-      }
-    ]
   end
 end

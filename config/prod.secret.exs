@@ -31,7 +31,7 @@ config :today, TodayWeb.Endpoint,
   ],
   url: [host: System.get_env("APP_NAME") <> ".gigalixirapp.com", port: 80],
   secret_key_base: secret_key_base,
-  server: true,
+  server: true
 
 
 # ## Using releases (Elixir v1.9+)

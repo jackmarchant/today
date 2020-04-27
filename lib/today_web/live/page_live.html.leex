@@ -1,0 +1,28 @@
+<section>
+  <h1 class="page-title"><%= gettext "📅 Today, it's %{date}", date: @date %></h1>
+
+  <h3>Create a To Do</h3>
+  <form phx-submit="save" phx-change="change-todo">
+    <%= text_input :new_todo, :title, placeholder: "Something I need to do...", autofocus: true, "phx-debounce": "300" %>
+  </form>
+
+  <h3>Today's To Do's</h3>
+  <ul class="todo-list">
+    <%= for todo <- @todos do %>
+      <%= if todo.completed do %>
+        <li class="todo-list-item todo-list-item--completed">
+      <% else %>
+        <li class="todo-list-item">
+      <% end %>
+        <label for="todo-item-<%=todo.id %>">
+          <%= if todo.completed do %>
+            <input type="checkbox" phx-click="toggle-complete" phx-value-id="<%= todo.id %>" id="todo-item-<%= todo.id %>" checked="checked">
+          <% else %>
+            <input type="checkbox" phx-click="toggle-complete" phx-value-id="<%= todo.id %>" id="todo-item-<%= todo.id %>">
+          <% end %>
+          <span class="todo-list-item__title"><%= todo.title %></span>
+        </label>
+      </li>
+    <% end %>
+  </ul>
+</section>

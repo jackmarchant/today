@@ -29,7 +29,7 @@ config :today, TodayWeb.Endpoint,
     port: String.to_integer(System.get_env("PORT") || "4000"),
     transport_options: [socket_opts: [:inet6]]
   ],
-  url: [host: System.get_env("APP_NAME") <> ".gigalixirapp.com", port: 80],
+  url: [host: System.get_env("DOMAIN"), port: 80],
   secret_key_base: secret_key_base,
   server: true
 

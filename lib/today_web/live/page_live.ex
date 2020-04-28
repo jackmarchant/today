@@ -5,7 +5,7 @@ defmodule TodayWeb.PageLive do
   @impl true
   def mount(_params, _session, socket) do
     if connected?(socket), do: Today.subscribe()
-    {:ok, assign(socket, get_assigns()), temporary_assigns: [todos: []]}
+    {:ok, assign(socket, get_assigns())}
   end
 
   @impl true
@@ -23,8 +23,8 @@ defmodule TodayWeb.PageLive do
 
   @impl true
   def handle_event("delete", %{"id" => id}, socket) do
-    Today.delete_todo(id)
-    {:noreply, socket}
+    {:ok, _} = Today.delete_todo(id)
+    {:noreply, assign(socket, todos: Today.get_todos())}
   end
 
   @impl true
@@ -44,8 +44,7 @@ defmodule TodayWeb.PageLive do
 
   @impl true
   def handle_info({:todo_deleted, todo}, socket) do
-    IO.inspect todo, label: "deleted todo"
-    {:noreply, update(socket, :todos, fn todos -> [todo | todos] end)}
+    {:noreply, update(socket, :todos, &Enum.filter(&1, fn t -> t.id != todo.id end))}
   end
 
   defp get_assigns() do

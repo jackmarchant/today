@@ -14,7 +14,8 @@
     display: flex;
 
     .todo-list-item__title {
-        display: inline-block;    
+        display: inline-block;
+        user-select: none;
     }
 
     .todo-list-item__title:first-letter {
@@ -34,12 +35,17 @@
 
 .todo-list-item__label {
     cursor: pointer;
-    width: 90%;
+    width: 80%;
+    margin-right: 10%;
 }
 
 .todo-list-item__delete {
-    width: 14px;
-    height: 14px;
-    display: inline-block;
-    cursor: pointer;
+    padding: 5px;
+
+    svg {
+        width: 14px;
+        height: 14px;
+        display: inline-block;
+        cursor: pointer;
+    }
 }

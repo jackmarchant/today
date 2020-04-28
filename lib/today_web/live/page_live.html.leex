@@ -8,7 +8,7 @@
     <%= text_input :new_todo, :title, placeholder: "Something I need to do...", autofocus: true, "phx-debounce": "300" %>
   </form>
 
-  <ul id="todos" class="todo-list" phx-update="prepend">
+  <ul id="todos" class="todo-list">
     <%= for todo <- @todos do %>
       <%= live_component @socket, TodayWeb.TodoComponent, id: todo.id, todo: todo %>
     <% end %>

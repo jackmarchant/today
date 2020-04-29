@@ -25,11 +25,11 @@ secret_key_base =
     """
 
 config :today, TodayWeb.Endpoint,
-  https: [
-    port: String.to_integer(System.get_env("PORT") || "4000"),
+  http: [
+    port: String.to_integer(System.get_env("PORT")),
     transport_options: [socket_opts: [:inet6]]
   ],
-  url: [host: System.get_env("DOMAIN"), port: String.to_integer(System.get_env("PORT") || "4000")],
+  url: [host: System.get_env("DOMAIN")],
   force_ssl: [hsts: true],
   secret_key_base: secret_key_base,
   server: true

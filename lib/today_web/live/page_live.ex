@@ -34,17 +34,17 @@ defmodule TodayWeb.PageLive do
 
   @impl true
   def handle_info({:todo_created, todo}, socket) do
-    {:noreply, update(socket, :todos, fn todos -> [todo | todos] end)}
+    {:noreply, assign(socket, todos: Today.get_todos())}
   end
 
   @impl true
   def handle_info({:todo_toggled, todo}, socket) do
-    {:noreply, update(socket, :todos, fn todos -> [todo | todos] end)}
+    {:noreply, assign(socket, todos: Today.get_todos())}
   end
 
   @impl true
   def handle_info({:todo_deleted, todo}, socket) do
-    {:noreply, update(socket, :todos, &Enum.filter(&1, fn t -> t.id != todo.id end))}
+    {:noreply, assign(socket, todos: Today.get_todos())}
   end
 
   defp get_assigns() do

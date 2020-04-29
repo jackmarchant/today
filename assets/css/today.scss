@@ -39,7 +39,11 @@
     margin-right: 10%;
 }
 
-.todo-list-item__delete {
+.todo-list-item__delete, .todo-list-item__delete:hover, .todo-list-item__delete:focus {
+    background-color: transparent;
+    color: #f31717;
+    border: none;
+
     svg {
         width: 14px;
         height: 14px;

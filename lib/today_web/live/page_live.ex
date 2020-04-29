@@ -33,17 +33,7 @@ defmodule TodayWeb.PageLive do
   end
 
   @impl true
-  def handle_info({:todo_created, todo}, socket) do
-    {:noreply, assign(socket, todos: Today.get_todos())}
-  end
-
-  @impl true
-  def handle_info({:todo_toggled, todo}, socket) do
-    {:noreply, assign(socket, todos: Today.get_todos())}
-  end
-
-  @impl true
-  def handle_info({:todo_deleted, todo}, socket) do
+  def handle_info({_event, _todo}, socket) do
     {:noreply, assign(socket, todos: Today.get_todos())}
   end
 

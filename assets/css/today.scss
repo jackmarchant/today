@@ -1,7 +1,3 @@
-.page-title {
-    font-weight: 700;
-}
-
 .header {
     margin-bottom: 50px;
 }
@@ -12,9 +8,10 @@
 .todo-list-item {
     list-style-type: none;
     display: flex;
+    margin-bottom: 2rem;
 
     .todo-list-item__title {
-        display: inline-block;
+        display: inline;
         user-select: none;
     }
 

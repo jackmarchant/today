@@ -47,6 +47,6 @@ defmodule TodayWeb.PageLive do
   defp get_todays_date do
     "Australia/Sydney"
     |> Timex.now()
-    |> Timex.format!("{WDshort} {D} {Mfull} {YYYY}")
+    |> Timex.format!("{WDfull} {D} {Mfull} {YYYY}")
   end
 end

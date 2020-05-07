@@ -1,3 +1,4 @@
+<%= if @signed_in do %>
 <section>
   <div class="header">
     <h1>📅 <strong>Today, </strong><%= gettext "it's %{date}", date: @date %></h1>
@@ -14,3 +15,22 @@
     <% end %>
   </ul>
 </section>
+<% else %>
+<section>
+  <div class="header">
+    <h1>Signup or Login to Today</h1>
+  </div>
+
+  <%= f = form_for @changeset, "#", [phx_change: :validate, phx_submit: :login_or_signup] %>
+    <%= label f, :email %>
+    <%= text_input f, :email %>
+    <%= error_tag f, :email %>
+
+    <%= label f, :password %>
+    <%= password_input f, :password %>
+    <%= error_tag f, :password %>
+
+  <%= submit "Submit" %>
+</form>
+</section>
+<% end %>

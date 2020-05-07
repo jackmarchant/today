@@ -8,8 +8,11 @@ defmodule Today do
   """
   import Ecto.Query
 
-  def get_todos do
-    Today.Repo.all(from t in Today.Todo, order_by: [desc: t.id])
+  def get_todos(%Today.User{} = user) do
+    Today.Todo
+    |> where([t], t.user_id == ^user.id)
+    |> order_by([t], desc: t.id)
+    |> Today.Repo.all()
   end
 
   def create_todo(params) do
@@ -34,13 +37,45 @@ defmodule Today do
     broadcast({:ok, todo}, :todo_toggled)
   end
 
-  def subscribe do
-    Phoenix.PubSub.subscribe(Today.PubSub, "todos")
+  def create_user(changeset) do
+    changeset
+    |> Today.Repo.insert()
+    |> broadcast(:user_created)
+  end
+
+  def authenticate(%{email: email, password: password}) do
+    Today.User
+    |> Today.Repo.get_by(email: email)
+    |> Comeonin.Bcrypt.check_pass(password, hash_key: :password)
+  end
+
+  def signup_or_login(params) do
+    %{
+      email: params["email"],
+      password: params["password"]
+    }
+    |> authenticate()
+    |> process_authentication(params)
+  end
+
+  def subscribe(channel) do
+    Phoenix.PubSub.subscribe(Today.PubSub, channel)
   end
 
   defp broadcast({:error, _reason} = error, _event), do: error
-  defp broadcast({:ok, todo}, event) do
+  defp broadcast({:ok, %Today.Todo{} = todo}, event) do
     Phoenix.PubSub.broadcast(Today.PubSub, "todos", {event, todo})
     {:ok, todo}
   end
+  defp broadcast({:ok, %Today.User{} = user}, event) do
+    Phoenix.PubSub.broadcast(Today.PubSub, "users", {event, user})
+    {:ok, user}
+  end
+
+  defp process_authentication({:error, _}, params) do
+    %Today.User{}
+    |> Today.User.changeset(params)
+    |> create_user()
+  end
+  defp process_authentication(tuple, _), do: broadcast(tuple, :user_logged_in)
 end

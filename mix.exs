@@ -48,7 +48,9 @@ defmodule Today.MixProject do
       {:jason, "~> 1.0"},
       {:plug_cowboy, "~> 2.0"},
       {:tzdata, "~> 1.0.3"},
-      {:timex, "~> 3.5"}
+      {:timex, "~> 3.5"},
+      {:comeonin, "~> 4.0"},
+      {:bcrypt_elixir, "~> 1.0"},
     ]
   end
 
